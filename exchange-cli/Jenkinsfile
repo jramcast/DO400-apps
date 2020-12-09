@@ -21,5 +21,14 @@ pipeline {
         """
       }
     }
+
+    stage ('Unit Tests') {
+      steps {
+        sh """
+          cd exchange-cli
+          npm run test:unit
+        """
+      }
+    }
   }
 }
