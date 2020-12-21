@@ -30,6 +30,17 @@ pipeline {
                 }
             }
         }
+        stage('Package') {
+            steps {
+                dir('simple-calculator') {
+                    sh '''
+                        ./mvnw package -DskipTests \
+                        -Dquarkus.package.type=uber-jar
+                    '''
+                    archiveArtifacts 'target/*.jar'
+                }
+            }
+        }
     }
     post {
         failure {
