@@ -14,7 +14,7 @@ pipeline {
             steps {
                 sh '''
                     oc start-build greeting-metrics \
-                    --follow --wait -n rht-jramirez-metrics
+                    --follow --wait -n jramirez-metrics
                 '''
             }
         }
