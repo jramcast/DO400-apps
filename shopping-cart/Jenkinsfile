@@ -1,0 +1,46 @@
+pipeline {
+    agent { node { label 'maven' } }
+    environment { APP_NAMESPACE = 'rht-jramirez-security-scans' }
+    stages {
+        stage('Test') {
+            steps {
+                dir('shopping-cart') {
+                    sh './mvnw clean test'
+                }
+            }
+        }
+        stage('Image Build') {
+            steps {
+                dir('shopping-cart') {
+                    sh '''
+                        oc start-build security-scans \
+                        --follow --wait -n ${APP_NAMESPACE}
+                    '''
+                }
+            }
+        }
+        stage('Security Scan') {
+            steps {
+                dir('shopping-cart') {
+                    sh '''
+                        oc process -f kubefiles/security-scan-template.yml \
+                        -n ${APP_NAMESPACE} \
+                        -p PROJECT_NAME=${APP_NAMESPACE} \
+                        | oc replace --force -n ${APP_NAMESPACE} -f -
+                    '''
+                    sh "../tools/check-job-state.sh security-scans-trivy ${APP_NAMESPACE}"
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                dir('shopping-cart') {
+                    sh '''
+                        oc rollout latest dc/security-scans \
+                        -n ${APP_NAMESPACE}
+                    '''
+                }
+            }
+        }
+    }
+}
