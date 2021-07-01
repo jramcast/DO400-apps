@@ -2,13 +2,13 @@ pipeline {
     agent { node { label 'maven' } }
     environment { APP_NAMESPACE = 'rht-jramirez-security-scans' }
     stages {
-        stage('Test') {
-            steps {
-                dir('shopping-cart') {
-                    sh './mvnw clean test'
-                }
-            }
-        }
+        // stage('Test') {
+        //     steps {
+        //         dir('shopping-cart') {
+        //             sh './mvnw clean test'
+        //         }
+        //     }
+        // }
         stage('Image Build') {
             steps {
                 dir('shopping-cart') {
