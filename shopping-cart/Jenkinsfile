@@ -29,7 +29,7 @@ pipeline {
                         | oc replace --force -n ${APP_NAMESPACE} -f -
                     """
 
-                    sh "! ../tools/check-job-log.sh security-scans-trivy ${APP_NAMESPACE} CVE-2020-14583"
+                    sh "! ../tools/grep-job-log.sh security-scans-trivy ${APP_NAMESPACE} CVE-2020-14583"
                 }
             }
         }
